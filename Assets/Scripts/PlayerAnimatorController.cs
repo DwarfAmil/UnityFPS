@@ -22,4 +22,10 @@ public class PlayerAnimatorController : MonoBehaviour
         get => _animator.GetFloat("movementSpeed");
     }
 
+    // _animator.Play()를 외부에서 사용 할 수 있도록 정의
+    public void Play(string stateName, int layer, float normalizedTime)
+    {
+        _animator.Play(stateName, layer, normalizedTime);
+    }
+
 }

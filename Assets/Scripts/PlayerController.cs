@@ -33,6 +33,9 @@ public class PlayerController : MonoBehaviour
 
     // 사운드 재생 제어
     private AudioSource _audioSource;
+    
+    // 무기를 이용한 공격 제어
+    private WeaponAssaultRifle _weapon;
 
     private void Awake()
     {
@@ -47,6 +50,7 @@ public class PlayerController : MonoBehaviour
         _status = GetComponent<Status>();
         _animator = GetComponent<PlayerAnimatorController>();
         _audioSource = GetComponent<AudioSource>();
+        _weapon = GetComponentInChildren<WeaponAssaultRifle>();
     }
 
     private void Update()
@@ -54,6 +58,7 @@ public class PlayerController : MonoBehaviour
         UpdateRotate();
         UpdateMove();
         UpdateJump();
+        UpdateWeaponAction();
     }
 
     private void UpdateRotate()
@@ -117,6 +122,18 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(_keyCodeJump))
         {
             _movement.Jump();
+        }
+    }
+
+    private void UpdateWeaponAction()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            _weapon.StartWeaponAction();
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            _weapon.StopWeaponAction();
         }
     }
 }
