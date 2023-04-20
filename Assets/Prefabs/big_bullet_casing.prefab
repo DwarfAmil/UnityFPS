@@ -11,10 +11,11 @@ GameObject:
   - component: {fileID: 8916283286044195906}
   - component: {fileID: 8916283286043425890}
   - component: {fileID: 8916283286042427042}
+  - component: {fileID: -5500946910073455117}
   - component: {fileID: 8916283284827796596}
   - component: {fileID: 8916283284827796599}
   - component: {fileID: 8916283284827796597}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: big_bullet_casing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,6 +87,26 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-5500946910073455117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8916283286044352610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 063d1eb4b7896d742bcc91583df0334e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _deactiveTime: 5
+  casingSpin: 1
+  _audioClips:
+  - {fileID: 8300000, guid: 39a52c8570aa5ee4b8c76570a3eda151, type: 3}
+  - {fileID: 8300000, guid: a422bb42207b84543bfa921cf5ad09d2, type: 3}
+  - {fileID: 8300000, guid: 031057f31153d6e4da071a851d29e9e2, type: 3}
+  - {fileID: 8300000, guid: 13f0d2cf3fe7b1744ada35cb7c1e1a4b, type: 3}
+  - {fileID: 8300000, guid: 3f8b82312021c504f8a6212dddba71f3, type: 3}
 --- !u!54 &8916283284827796596
 Rigidbody:
   m_ObjectHideFlags: 0
