@@ -9,9 +9,15 @@ public struct WeaponSetting
 {
     // 무기 이름
     public WeaponName weaponName;
+    
+    // 현재 탄창 수
+    public int currentMagazine;
+
+    //최대 탄창 수
+    public int maxMagazine;
 
     // 현재 탄약 수
-    public int curruntAmmo;
+    public int currentAmmo;
 
     // 최대 탄약 수
     public int maxAmmo;

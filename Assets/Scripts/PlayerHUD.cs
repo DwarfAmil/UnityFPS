@@ -26,12 +26,24 @@ public class PlayerHUD : MonoBehaviour
     // 현재 / 최대 탄 수 출력 Text
     [SerializeField] private TextMeshProUGUI _textAmmo;
 
+    [Header("Magazine")]
+    // 탄창 UI 프리팹
+    [SerializeField] private GameObject _magazineUIPrefab;
+    
+    // 탄창 UI가 배치되는 Panel
+    [SerializeField] private Transform _magazineParent;
+    
+    // 탄창 UI 리스트
+    private List<GameObject> _magazineList;
+
     private void Awake()
     {
         SetupWeapon();
+        SetupMagazine();
         
         // 메소드가 등록되어 있는 이벤트 클래스(weapon.xx)의 Invoke() 메소드가 호출될 때 등록된 메소드(매개변수)가 실행된다
-        _weapon._onAmmoEvent.AddListener(UpdateAmmoHUD);
+        _weapon.onAmmoEvent.AddListener(UpdateAmmoHUD);
+        _weapon.onMagazineEvent.AddListener(UpdateMagazineHUD);
     }
 
     private void SetupWeapon()
@@ -43,5 +55,41 @@ public class PlayerHUD : MonoBehaviour
     private void UpdateAmmoHUD(int curruntAmmo, int maxAmmo)
     {
         _textAmmo.text = $"<size=40>{curruntAmmo}/</size>{maxAmmo}";
+    }
+
+    private void SetupMagazine()
+    {
+        // _weapon에 등록되어 있는 최대 탄창 개수만큼 Image Icon을 생성
+        // _magazineParent 오브젝트의 자식으로 등록 후 모두 비활성화 / 리스트에 저장
+        _magazineList = new List<GameObject>();
+
+        for (int i = 0; i < _weapon.MaxMagazine; i++)
+        {
+            GameObject clone = Instantiate(_magazineUIPrefab);
+            clone.transform.SetParent(_magazineParent);
+            clone.SetActive(false);
+            
+            _magazineList.Add(clone);
+        }
+        
+        // _weapon에 등록되어 있는 현재 탄창 개수만큼 오브젝트 활성화
+        for (int i = 0; i < _weapon.CurrentMagazine; i++)
+        {
+            _magazineList[i].SetActive(true);
+        }
+    }
+
+    private void UpdateMagazineHUD(int currentMagazine)
+    {
+        // 전부 비활성화하고, currentMagazine 개수만큼 활성화
+        for (int i = 0; i < _magazineList.Count; i++)
+        {
+            _magazineList[i].SetActive(false);
+        }
+
+        for (int i = 0; i < currentMagazine; i++)
+        {
+            _magazineList[i].SetActive(true);
+        }
     }
 }

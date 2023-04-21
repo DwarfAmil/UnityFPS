@@ -16,6 +16,8 @@ TagManager:
   - Wood (Static)
   - Dirt (Static)
   - Wood
+  - ImpactObstacle
+  - ImpactNormal
   layers:
   - Default
   - TransparentFX

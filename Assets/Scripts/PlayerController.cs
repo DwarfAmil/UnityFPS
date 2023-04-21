@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -11,6 +12,9 @@ public class PlayerController : MonoBehaviour
     
     // 점프 키 세팅
     [SerializeField] private KeyCode _keyCodeJump = KeyCode.Space;
+    
+    // 탄 재장전 키
+    [SerializeField] private KeyCode _keyCodeReload = KeyCode.R;
 
     [Header("Audio Clips")]
     // 걷기 사운드 클립
@@ -134,6 +138,20 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetMouseButtonUp(0))
         {
             _weapon.StopWeaponAction();
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            _weapon.StartWeaponAction(1);
+        }
+        else if (Input.GetMouseButtonUp(1))
+        {
+            _weapon.StopWeaponAction(1);
+        }
+
+        if (Input.GetKeyDown(_keyCodeReload))
+        {
+            _weapon.StartReload();
         }
     }
 }

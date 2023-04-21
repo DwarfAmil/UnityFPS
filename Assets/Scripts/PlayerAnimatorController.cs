@@ -13,6 +13,11 @@ public class PlayerAnimatorController : MonoBehaviour
         _animator = GetComponentInChildren<Animator>();
     }
 
+    public void OnReload()
+    {
+        _animator.SetTrigger("onReload");
+    }
+
     public float MoveSpeed
     {
         // Animator View에 있는 float 타입 변수 "ParamName"의 값을 value로 설정
@@ -22,10 +27,22 @@ public class PlayerAnimatorController : MonoBehaviour
         get => _animator.GetFloat("movementSpeed");
     }
 
+    // Assult Rifle 마우스 오른쪽 클릭 앤션 (default / aim mode)
+    public bool AimModeIs
+    {
+        set => _animator.SetBool("isAimMode", value);
+        get => _animator.GetBool("isAimMode");
+    }
+
     // _animator.Play()를 외부에서 사용 할 수 있도록 정의
     public void Play(string stateName, int layer, float normalizedTime)
     {
         _animator.Play(stateName, layer, normalizedTime);
+    }
+
+    public bool CurrentAnimationIs(string name)
+    {
+        return _animator.GetCurrentAnimatorStateInfo(0).IsName(name);
     }
 
 }
