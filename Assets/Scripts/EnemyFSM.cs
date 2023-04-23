@@ -35,7 +35,7 @@ public class EnemyFSM : MonoBehaviour
     {
         _status = GetComponent<Status>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
-        _target = target;
+        this._target = target;
         
         // NavMeshAgent 컴포넌트에서 회전을 업데이트 하지 않도록 설정
         _navMeshAgent.updateRotation = false;

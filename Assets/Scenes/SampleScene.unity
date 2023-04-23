@@ -122,7 +122,7 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: c9f4b9fdbe80d0e4bb6d9246184a5670, type: 2}
 --- !u!1 &65045058
 GameObject:
   m_ObjectHideFlags: 0
@@ -140,7 +140,7 @@ GameObject:
   m_TagString: ImpactNormal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &65045059
 Transform:
@@ -376,7 +376,7 @@ GameObject:
   m_TagString: ImpactNormal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!65 &200142190
 BoxCollider:
@@ -1690,7 +1690,7 @@ GameObject:
   m_TagString: ImpactNormal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &1280630095
 Transform:
@@ -1787,7 +1787,7 @@ GameObject:
   m_TagString: ImpactNormal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &1349365744
 Transform:
@@ -2010,7 +2010,7 @@ GameObject:
   m_TagString: ImpactNormal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &1573021595
 Transform:
@@ -2107,7 +2107,7 @@ GameObject:
   m_TagString: ImpactObstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &1787741538
 Transform:
