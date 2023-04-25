@@ -18,6 +18,7 @@ TagManager:
   - Wood
   - ImpactObstacle
   - ImpactNormal
+  - ImpactEnemy
   layers:
   - Default
   - TransparentFX

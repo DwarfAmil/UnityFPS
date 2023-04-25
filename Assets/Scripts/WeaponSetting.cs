@@ -10,6 +10,9 @@ public struct WeaponSetting
     // 무기 이름
     public WeaponName weaponName;
     
+    // 무기 공격력
+    public int damage;
+    
     // 현재 탄창 수
     public int currentMagazine;
 

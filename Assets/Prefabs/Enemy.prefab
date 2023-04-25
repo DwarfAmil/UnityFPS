@@ -110,9 +110,10 @@ GameObject:
   - component: {fileID: -8735462835178595759}
   - component: {fileID: 403431334518379795}
   - component: {fileID: 9036629191549673821}
+  - component: {fileID: 4824162824968151088}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: ImpactEnemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -146,6 +147,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63eed61076ab4c145a5c97e5d048a74e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _targetRecognitionRange: 8
+  _pursuitLimitRange: 10
+  _projectilePrefab: {fileID: 7496923941569990287, guid: c8a85949563f83f49a0313db01b948f2,
+    type: 3}
+  _projectileSpawnPoint: {fileID: 896995065576051077}
+  _attackRange: 5
+  _attackRate: 1
 --- !u!114 &403431334518379795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -158,8 +166,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b6d1be5ca1c7b3479b9b660508ac40b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 1.5
-  runSpeed: 3
+  onHPEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  _walkSpeed: 1.5
+  _runSpeed: 3
+  _maxHP: 100
 --- !u!195 &9036629191549673821
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -182,6 +194,22 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!54 &4824162824968151088
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8078254122478760870}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!1 &8592443692254021874
 GameObject:
   m_ObjectHideFlags: 0

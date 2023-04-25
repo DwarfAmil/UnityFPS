@@ -7,7 +7,7 @@ using UnityEngine.AI;
 using UnityEngine.XR;
 using Random = UnityEngine.Random;
 
-public enum EnemyState {None = -1, Idle = 0, Wander, Pursuit, }
+public enum EnemyState {None = -1, Idle = 0, Wander, Pursuit, Attack, }
 
 public class EnemyFSM : MonoBehaviour
 {
@@ -17,9 +17,25 @@ public class EnemyFSM : MonoBehaviour
 
     // 추적 범위 (이 범위 바깥으로 나가면 "Wander" 상태로 변경)
     [SerializeField] private float _pursuitLimitRange = 10;
+
+    [Header("Attack")]
+    // 발사체 프리팹
+    [SerializeField] private GameObject _projectilePrefab;
+
+    // 발사체 생성 위치
+    [SerializeField] private Transform _projectileSpawnPoint;
+
+    // 공격 범위 (이 범위 안에 들어오면 "Attack" 상태로 변경)
+    [SerializeField] private float _attackRange = 5;
+
+    // 공격 속도
+    [SerializeField] private float _attackRate = 1;
     
     // 현재 적 행동
     private EnemyState _enemyState = EnemyState.None;
+
+    // 공격 주기 계산용 변수
+    private float _lastAttackTime = 0;
 
     // 이동 속도 등의 정보
     private Status _status;
@@ -29,13 +45,17 @@ public class EnemyFSM : MonoBehaviour
 
     // 적의 공격 대상
     private Transform _target;
+    
+    // 적 메모리 풀
+    private EnemyMemoryPool _enemyMemoryPool;
 
     //private void Awake()
-    public void Setup(Transform target)
+    public void Setup(Transform target, EnemyMemoryPool enemyMemoryPool)
     {
         _status = GetComponent<Status>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
         this._target = target;
+        this._enemyMemoryPool = enemyMemoryPool;
         
         // NavMeshAgent 컴포넌트에서 회전을 업데이트 하지 않도록 설정
         _navMeshAgent.updateRotation = false;
@@ -67,7 +87,7 @@ public class EnemyFSM : MonoBehaviour
         _enemyState = newState;
 
         // 새로운 상태 재생
-         StartCoroutine(_enemyState.ToString());
+        StartCoroutine(_enemyState.ToString());
     }
 
     private IEnumerator Idle()
@@ -102,7 +122,7 @@ public class EnemyFSM : MonoBehaviour
         float maxTime = 10;
 
         // 이동 속도 설정
-        _navMeshAgent.speed = _status.WalkSpeed;
+        _navMeshAgent.speed = _status.walkSpeed;
 
         // 목표 위치 설정
         _navMeshAgent.SetDestination(CalculateWanderPosition());
@@ -188,6 +208,9 @@ public class EnemyFSM : MonoBehaviour
         
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, _pursuitLimitRange);
+
+        Gizmos.color = new Color(0.39f, 0.04f, 0.04f);
+        Gizmos.DrawWireSphere(transform.position, _attackRange);
     }
 
     private IEnumerator Pursuit()
@@ -195,7 +218,7 @@ public class EnemyFSM : MonoBehaviour
         while (true)
         {
             // 이동 속도 설정
-            _navMeshAgent.speed = _status.RunSpeed;
+            _navMeshAgent.speed = _status.runSpeed;
             
             // 목표위치를 현재 플레이어의 위치로 설정
             _navMeshAgent.SetDestination(_target.position);
@@ -205,6 +228,37 @@ public class EnemyFSM : MonoBehaviour
             
             // 타겟과의 거리에 따라 행동 선택
             CalculateDistanceToTargetAndSelectState();
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator Attack()
+    {
+        // 공격할 때는 이동을 멈추도록 설정
+        _navMeshAgent.ResetPath();
+
+        while (true)
+        {
+            // 타겟 방향 주시
+            LookRotationToTarget();
+            
+            // 타겟과의 거리에 따라 행동 선택 (Wander, Pursuit, Attack)
+            CalculateDistanceToTargetAndSelectState();
+
+            if (Time.time - _lastAttackTime > _attackRate)
+            {
+                // 공격 주기가 되어야 공격할 수 있도록 하기 위해 현재 시간 저장
+                _lastAttackTime = Time.time;
+
+                // 발사체 생성
+                GameObject clone = Instantiate(
+                    _projectilePrefab,
+                    _projectileSpawnPoint.position,
+                    _projectileSpawnPoint.rotation
+                    );
+                clone.GetComponent<EnemyProjectile>().Setup(_target.position);
+            }
 
             yield return null;
         }
@@ -231,13 +285,27 @@ public class EnemyFSM : MonoBehaviour
         // Target과 적의 거리 계산 후 거리에 따라 행동 선택
         float dis = Vector3.Distance(_target.position, transform.position);
 
-        if (dis <= _targetRecognitionRange)
+        if (dis <= _attackRange)
+        {
+            ChangeState(EnemyState.Attack);
+        }
+        else if (dis <= _targetRecognitionRange)
         {
             ChangeState(EnemyState.Pursuit);
         }
         else if (dis >= _pursuitLimitRange)
         {
             ChangeState(EnemyState.Wander);
+        }
+    }
+    
+    public void TakeDamage(int damage)
+    {
+        bool isDie = _status.DecreaseHP(damage);
+
+        if (isDie == true)
+        {
+            _enemyMemoryPool.DeactivateEnemy(gameObject);
         }
     }
 }

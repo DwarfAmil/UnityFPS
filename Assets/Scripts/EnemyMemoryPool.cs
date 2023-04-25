@@ -44,7 +44,7 @@ public class EnemyMemoryPool : MonoBehaviour
     private IEnumerator SpawnTile()
     {
         var currentNumber = 0;
-        const int maximumNumber = 50;
+        const int maximumNumber = 10;
 
         while (true)
         {
@@ -81,9 +81,14 @@ public class EnemyMemoryPool : MonoBehaviour
         var item = _enemyMemoryPool.ActivatePoolItem();
         item.transform.position = point.transform.position;
         
-        item.GetComponent<EnemyFSM>().Setup(_target);
+        item.GetComponent<EnemyFSM>().Setup(_target, this);
         
         // 타일 오브젝트를 비활성화
         _spawnPointMemoryPool.DeactivePoolItem(point);
+    }
+
+    public void DeactivateEnemy(GameObject enemy)
+    {
+        _enemyMemoryPool.DeactivePoolItem(enemy);
     }
 }

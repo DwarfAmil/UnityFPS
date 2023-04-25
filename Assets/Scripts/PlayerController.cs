@@ -88,8 +88,8 @@ public class PlayerController : MonoBehaviour
                 isRun = Input.GetKey(_keyCodeRun);
 
             // 삼항연산자 이용 (조건 ? true : false)
-            // isRun이 true면 status.RunSpeed를 실행, false면 status.WalkSpeed를 실행
-            _movement.MoveSpeed = isRun == true ? _status.RunSpeed : _status.WalkSpeed;
+            // isRun이 true면 status.runSpeed를 실행, false면 status.walkSpeed를 실행
+            _movement.MoveSpeed = isRun == true ? _status.runSpeed : _status.walkSpeed;
             
             // isRun이 true면 Animator에 있는 "movementSpeed" 파라미터에 1을 넣음, false면 0.5를 넣음
             _animator.MoveSpeed = isRun == true ? 1 : 0.5f;
@@ -152,6 +152,16 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(_keyCodeReload))
         {
             _weapon.StartReload();
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        bool isDie = _status.DecreaseHP(damage);
+
+        if (isDie == true)
+        {
+            Debug.Log("GameOver");
         }
     }
 }

@@ -11,6 +11,9 @@ public class PlayerHUD : MonoBehaviour
     [Header("Components")]
     // 현재 정보가 출력되는 무기
     [SerializeField] private WeaponAssaultRifle _weapon;
+    
+    // 플레이어의 상태 (이동 속도, 체력)
+    [SerializeField] private Status _status;
 
     [Header("Weapon Base")]
     // 무기 이름
@@ -36,6 +39,15 @@ public class PlayerHUD : MonoBehaviour
     // 탄창 UI 리스트
     private List<GameObject> _magazineList;
 
+    [Header("HP & BloodScreen UI")]
+    // 플레이어의 체력을 출력하는 Text
+    [SerializeField] private TextMeshProUGUI _textHP;
+
+    // 플레이어가 공격 받았을 때 화면에 표기되는 Image
+    [SerializeField] private Image _imageBloodScreen;
+    
+    [SerializeField] private AnimationCurve _curveBloodScreen;
+
     private void Awake()
     {
         SetupWeapon();
@@ -44,6 +56,7 @@ public class PlayerHUD : MonoBehaviour
         // 메소드가 등록되어 있는 이벤트 클래스(weapon.xx)의 Invoke() 메소드가 호출될 때 등록된 메소드(매개변수)가 실행된다
         _weapon.onAmmoEvent.AddListener(UpdateAmmoHUD);
         _weapon.onMagazineEvent.AddListener(UpdateMagazineHUD);
+        _status.onHPEvent.AddListener(UpdateHPHUD);
     }
 
     private void SetupWeapon()
@@ -90,6 +103,33 @@ public class PlayerHUD : MonoBehaviour
         for (int i = 0; i < currentMagazine; i++)
         {
             _magazineList[i].SetActive(true);
+        }
+    }
+
+    private void UpdateHPHUD(int previous, int current)
+    {
+        _textHP.text = "HP " + current;
+
+        if (previous - current > 0)
+        {
+            StopCoroutine(nameof(OnBloodScreen));
+            StartCoroutine(nameof(OnBloodScreen));
+        }
+    }
+
+    private IEnumerator OnBloodScreen()
+    {
+        float percent = 0;
+
+        while (percent < 1)
+        {
+            percent += Time.deltaTime;
+
+            Color color = _imageBloodScreen.color;
+            color.a = Mathf.Lerp(1, 0, _curveBloodScreen.Evaluate(percent));
+            _imageBloodScreen.color = color;
+
+            yield return null;
         }
     }
 }
