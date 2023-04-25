@@ -47,6 +47,28 @@ public class ImpactMemoryPool : MonoBehaviour
         }
     }
 
+    public void SpawnImpact(Collider other, Transform knifeTransform)
+    {
+        // 부딪힌 오브젝트의 Tag 정보에 따라 다르게 처리
+        if (other.transform.CompareTag("ImpactNormal"))
+        {
+            OnSpawnImpact(ImpactType.Normal, knifeTransform.position, Quaternion.Inverse(knifeTransform.rotation));
+        }
+        else if (other.transform.CompareTag("ImpactObstacle"))
+        {
+            OnSpawnImpact(ImpactType.Obstacle, knifeTransform.position, Quaternion.Inverse(knifeTransform.rotation));
+        }
+        else if (other.transform.CompareTag("ImpactEnemy"))
+        {
+            OnSpawnImpact(ImpactType.Enemy, knifeTransform.position, Quaternion.Inverse(knifeTransform.rotation));
+        }
+        else if (other.transform.CompareTag("InteractionObject"))
+        {
+            Color color = other.transform.GetComponentInChildren<MeshRenderer>().material.color;
+            OnSpawnImpact(ImpactType.InteractionObject, knifeTransform.position, Quaternion.Inverse(knifeTransform.rotation), color);
+        }
+    }
+
     public void OnSpawnImpact(ImpactType type, Vector3 pos, Quaternion rot, Color color = new Color())
     {
         GameObject item = _memoryPool[(int)type].ActivatePoolItem();

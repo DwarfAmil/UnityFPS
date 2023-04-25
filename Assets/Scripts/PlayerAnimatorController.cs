@@ -45,4 +45,9 @@ public class PlayerAnimatorController : MonoBehaviour
         return _animator.GetCurrentAnimatorStateInfo(0).IsName(name);
     }
 
+    public void SetFloat(string paramName, float val)
+    {
+        _animator.SetFloat(paramName, val);
+    }
+
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class MemoryPool : MonoBehaviour
 {
@@ -38,6 +39,9 @@ public class MemoryPool : MonoBehaviour
     // 외부에서 현재 활성화 되어 있는 오브젝트 개수 확인을 위한 프로퍼티
     public int activeCount => _activeCount;
     
+    // 오브젝트가 임시로 보관되는 위치
+    private Vector3 _tempPos = new Vector3(48, 1, 48);
+    
     public MemoryPool(GameObject _poolObject)
     {
         _maxCount = 0;
@@ -62,8 +66,9 @@ public class MemoryPool : MonoBehaviour
 
             poolItem.isActive = false;
             poolItem.gameObject = GameObject.Instantiate(_poolObject);
+            poolItem.gameObject.transform.position = _tempPos;
             poolItem.gameObject.SetActive(false);
-            
+
             _poolItemList.Add(poolItem);
         }
     }
@@ -137,6 +142,7 @@ public class MemoryPool : MonoBehaviour
             {
                 _activeCount--;
 
+                poolItem.gameObject.transform.position = _tempPos;
                 poolItem.isActive = false;
                 poolItem.gameObject.SetActive(false);
                 
@@ -148,7 +154,7 @@ public class MemoryPool : MonoBehaviour
     /// <summary>
     /// 게임에 사용중인 모든 오브젝트를 비활성화 상태로 설정
     /// </summary>
-    public void DeactivePoolItems()
+    public void DeactiveAllPoolItems()
     {
         if (_poolItemList == null) return;
 
@@ -160,6 +166,7 @@ public class MemoryPool : MonoBehaviour
 
             if (poolItem.gameObject != null && poolItem.isActive == true)
             {
+                poolItem.gameObject.transform.position = _tempPos;
                 poolItem.isActive = false;
                 poolItem.gameObject.SetActive(false);
             }

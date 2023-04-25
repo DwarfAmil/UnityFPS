@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -31,15 +27,12 @@ public class PlayerController : MonoBehaviour
     
     // 이동 속도 등의 플레이어 정보
     private Status _status;
-    
-    // 애니메이션 재생 제어
-    private PlayerAnimatorController _animator;
 
     // 사운드 재생 제어
     private AudioSource _audioSource;
     
-    // 무기를 이용한 공격 제어
-    private WeaponAssaultRifle _weapon;
+    // 모든 무기가 상속받는 기반 클래스
+    private WeaponBase _weapon;
 
     private void Awake()
     {
@@ -52,9 +45,7 @@ public class PlayerController : MonoBehaviour
         _rotateToMouse = GetComponent<RotateToMouse>();
         _movement = GetComponent<MovementCharacterContrller>();
         _status = GetComponent<Status>();
-        _animator = GetComponent<PlayerAnimatorController>();
         _audioSource = GetComponent<AudioSource>();
-        _weapon = GetComponentInChildren<WeaponAssaultRifle>();
     }
 
     private void Update()
@@ -92,7 +83,7 @@ public class PlayerController : MonoBehaviour
             _movement.MoveSpeed = isRun == true ? _status.runSpeed : _status.walkSpeed;
             
             // isRun이 true면 Animator에 있는 "movementSpeed" 파라미터에 1을 넣음, false면 0.5를 넣음
-            _animator.MoveSpeed = isRun == true ? 1 : 0.5f;
+            _weapon.animator.MoveSpeed = isRun ? 1 : 0.5f;
             
             // isRun이 true이면 달리기 사운드 재생, false이면 걷기 사운드 재생
             _audioSource.clip = isRun == true ? _audioClipRun : _audioClipWalk;
@@ -109,7 +100,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             _movement.MoveSpeed = 0;
-            _animator.MoveSpeed = 0;
+            _weapon.animator.MoveSpeed = 0;
 
             // 멈췄을 때 사운드가 재생중이면 정지
             if (_audioSource.isPlaying == true)
@@ -163,5 +154,10 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("GameOver");
         }
+    }
+
+    public void SwitchingWeapon(WeaponBase newWeapon)
+    {
+        _weapon = newWeapon;
     }
 }

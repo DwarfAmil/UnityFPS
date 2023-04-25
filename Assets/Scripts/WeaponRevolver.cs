@@ -2,78 +2,34 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class WeaponAssaultRifle : WeaponBase
+public class WeaponRevolver : WeaponBase
 {
+    // 총구 이펙트 (on / off)
     [Header("Fire Effects")]
-    // 총구 이팩트 (On / Off)
     [SerializeField] private GameObject _muzzleFlashEffect;
 
-    [Header("Spawn Points")]
-    // 탄피 생성 위치
-    [SerializeField] private Transform _casingSpawnPoint;
-    
     // 총알 생성 위치
+    [Header("Spawn Point")]
     [SerializeField] private Transform _bulletSpawnPoint;
-    
+
+    // 공격, 장전 사운드
     [Header("Audio Clips")]
-    // 무기 장착 사운드
-    [SerializeField] private AudioClip _audioClipTakeOutWeapon;
-    
-    // 공격 사운드
     [SerializeField] private AudioClip _audioClipFire;
-    
-    // 재장전 사운드
     [SerializeField] private AudioClip _audioClipReload;
 
-    [Header("Aim UI")]
-    // default / aim 모드에 따라 Aim 이미지 활성 / 비활성
-    [SerializeField] private Image _imageAim;
-    
-    // 모드 전환 여부 체크용
-    private bool _isModeChange;
-
-    // 기본 모드에서의 카메라 FOV
-    private float _defaultModeFOV = 60;
-
-    // Aim 모드에서의 카메라 FOV
-    private float _aimModeFOV = 30;
-    
-    // 탄피 생성 후 활성 / 비활성 관리
-    public CasingMemoryPool _casingMemoryPool;
-    
     // 공격 효과 생성 후 활성 / 비활성 관리
     private ImpactMemoryPool _impactMemoryPool;
-    
+
     // 광선 발사
     private Camera _mainCamera;
-    
-    void Awake()
-    {
-        // 기반 클래스의 초기화를 위한 Setup() 메소드 호출
-        base.Setup();
-        
-        _casingMemoryPool = GetComponent<CasingMemoryPool>();
-        _impactMemoryPool = GetComponent<ImpactMemoryPool>();
-        _mainCamera = Camera.main;
-        
-        // 처음 탄창 수는 최대로 설정
-        _weaponSetting.currentMagazine = _weaponSetting.maxMagazine;
-        
-        // 처음 탄약 수는 퇴대로 설정
-        _weaponSetting.currentAmmo = _weaponSetting.maxAmmo;
-    }
 
     private void OnEnable()
     {
-        // 무기 장착 사운드 재생
-        PlaySound(_audioClipTakeOutWeapon);
-        
-        // 총구 이팩트 오브젝트 비활성화
+        // 총구 이펙트 오브젝트 비활성화
         _muzzleFlashEffect.SetActive(false);
         
-        // 무기가 활성화 될 때 해당 무기의 탄창 정보를 갱신한다
+        // 무기가 활성화 될 때 해당 무기의 탄창 정보를 갱신
         onMagazineEvent.Invoke(_weaponSetting.currentMagazine);
         
         // 무기가 활성화 될 때 해당 무기의 탄 수 정보를 갱신
@@ -82,70 +38,42 @@ public class WeaponAssaultRifle : WeaponBase
         ResetVariables();
     }
 
+    private void Awake()
+    {
+        base.Setup();
+
+        _impactMemoryPool = GetComponent<ImpactMemoryPool>();
+        _mainCamera = Camera.main;
+
+        // 처음 탄창 수 는 최대로 설정
+        _weaponSetting.currentMagazine = _weaponSetting.maxMagazine;
+
+        // 처음 탄 수는 최대로 설정
+        _weaponSetting.currentAmmo = _weaponSetting.maxAmmo;
+    }
+
     public override void StartWeaponAction(int type = 0)
     {
-        // 재장전 중일 때는 무기 액션을 할 수 없다
-        if (_isReload == true) return;
-        
-        // 모드 전환중이면 무기 액션을 할 수 없다
-        if (_isModeChange == true) return;
-
-        // 마우스 왼쪽 클릭 (공격 시작)
-        if (type == 0)
+        if (type == 0 && _isAttack == false && _isReload == false)
         {
-            // 연속 공격
-            if (_weaponSetting.isAutomaticAttack == true)
-            {
-                _isAttack = true;
-                StartCoroutine("OnAttackLoop");
-            }
-        
-            // 단발 공격
-            else
-            {
-                OnAttack();
-            }
-        }
-        
-        // 마우스 오른쪽 클릭 (모드 전환)
-        else
-        {
-            // 공격 중일 때는 모드 전환을 할 수 없다
-            if (_isAttack == true) return;
-
-            StartCoroutine("OnModeChange");
+            OnAttack();
         }
     }
 
     public override void StopWeaponAction(int type = 0)
     {
-        // 마우스 왼쪽 클릭 (공격 종료)
-        if (type == 0)
-        {
-            _isAttack = false;
-            StopCoroutine("OnAttackLoop");
-        }
+        _isAttack = false;
     }
 
     public override void StartReload()
     {
-        // 현재 재장전 중이면 재장전 불가능
+        // 현재 재장전 중이거나 탄창 수가 0이면 재장전 불가
         if (_isReload == true || _weaponSetting.currentMagazine <= 0) return;
         
-        // 무기 액션 도중에 'R'키를 눌러 재장전을 시도하면 무기 액션 종료 후 재장전
+        // 무기 액션 도중에 'R' 키를 눌러 재장전을 시도하면 무기 액션 종료 후 재장전
         StopWeaponAction();
 
-        StartCoroutine("OnReload");
-    }
-
-    private IEnumerator OnAttackLoop()
-    {
-        while (true)
-        {
-            OnAttack();
-
-            yield return null;
-        }
+        StartCoroutine(nameof(OnReload));
     }
 
     public void OnAttack()
@@ -171,19 +99,14 @@ public class WeaponAssaultRifle : WeaponBase
             _weaponSetting.currentAmmo--;
             onAmmoEvent.Invoke(_weaponSetting.currentAmmo, _weaponSetting.maxAmmo);
 
-            // 무기 애니메이션 재생 (모드에 따라 AimFire of Fire 애니메이션 재생)
-            // _animator.Play("Fire", -1, 0);
-            string animation = _animator.AimModeIs == true ? "AimFire" : "Fire";
-            _animator.Play(animation, -1, 0);
+            // 무기 애니메이션 재생
+            _animator.Play("Fire", -1, 0);
             
-            // 총구 이팩트 재생 (default mode 일 때만 재생)
-            if (_animator.AimModeIs == false) StartCoroutine("OnMuzzleFlashEffect");
+            // 총구 이팩트 재생
+            StartCoroutine("OnMuzzleFlashEffect");
 
             // 공격 사운드 재생
             PlaySound(_audioClipFire);
-            
-            // 탄피 생성
-            _casingMemoryPool.SpawnCasing(_casingSpawnPoint.position, transform.right);
             
             // 광선을 발사해 원하는 위치 공격 (+Impact Effect)
             TwoStepRaycast();
@@ -202,7 +125,7 @@ public class WeaponAssaultRifle : WeaponBase
     private IEnumerator OnReload()
     {
         _isReload = true;
-        
+
         // 재장전 애니메이션, 사운드 재생
         _animator.OnReload();
         PlaySound(_audioClipReload);
@@ -228,7 +151,7 @@ public class WeaponAssaultRifle : WeaponBase
             yield return null;
         }
     }
-
+    
     private void TwoStepRaycast()
     {
         Ray ray;
@@ -271,47 +194,10 @@ public class WeaponAssaultRifle : WeaponBase
         
         Debug.DrawRay(_bulletSpawnPoint.position, attackDirection * _weaponSetting.attackDistance, Color.blue);
     }
-
-    private IEnumerator OnModeChange()
-    {
-        float current = 0;
-        float percent = 0;
-        float time = 0;
-
-        _animator.AimModeIs = !_animator.AimModeIs;
-        _imageAim.enabled = !_imageAim.enabled;
-
-        float start = _mainCamera.fieldOfView;
-        float end = _animator.AimModeIs == true ? _aimModeFOV : _defaultModeFOV;
-
-        _isModeChange = true;
-
-        while (percent < 1)
-        {
-            current += Time.deltaTime;
-            percent = current / time;
-            
-            // mode에 따라 카메라의 시야각을 변경
-            _mainCamera.fieldOfView = Mathf.Lerp(start, end, percent);
-
-            yield return null;
-        }
-
-        _isModeChange = false;
-    }
-
+    
     private void ResetVariables()
     {
         _isReload = false;
         _isAttack = false;
-        _isModeChange = false;
-    }
-
-    public void IncreaseMagazine(int magazine)
-    {
-        _weaponSetting.currentMagazine =
-            CurrentMagazine + magazine > MaxMagazine ? MaxMagazine : CurrentMagazine + magazine;
-        
-        onMagazineEvent.Invoke(CurrentMagazine);
     }
 }
