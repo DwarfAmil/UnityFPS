@@ -307,6 +307,10 @@ public class WeaponAssaultRifle : MonoBehaviour
             {
                 hit.transform.GetComponent<EnemyFSM>().TakeDamage(_weaponSetting.damage);
             }
+            else if (hit.transform.CompareTag("InteractionObject"))
+            {
+                hit.transform.GetComponent<InteractionObject>().TakeDamage(_weaponSetting.damage);
+            }
         }
         
         Debug.DrawRay(_bulletSpawnPoint.position, attackDirection * _weaponSetting.attackDistance, Color.blue);
@@ -346,5 +350,12 @@ public class WeaponAssaultRifle : MonoBehaviour
         _isAttack = false;
         _isModeChange = false;
     }
-    
+
+    public void IncreaseMagazine(int magazine)
+    {
+        _weaponSetting.currentMagazine =
+            CurrentMagazine + magazine > MaxMagazine ? MaxMagazine : CurrentMagazine + magazine;
+        
+        onMagazineEvent.Invoke(CurrentMagazine);
+    }
 }

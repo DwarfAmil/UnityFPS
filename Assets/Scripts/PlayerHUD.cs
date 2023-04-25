@@ -110,6 +110,9 @@ public class PlayerHUD : MonoBehaviour
     {
         _textHP.text = "HP " + current;
 
+        // 체력이 증가하면 화면에 빨간색 이미지를 출력하지 않도록 Return
+        if (previous <= current) return;
+
         if (previous - current > 0)
         {
             StopCoroutine(nameof(OnBloodScreen));
