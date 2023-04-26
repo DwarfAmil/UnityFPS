@@ -622,7 +622,7 @@ ModelImporter:
       name: grenade_throw@assault_rifle_01
       takeName: Armature|grenade_throw@assault_rifle_01
       internalID: 0
-      firstFrame: 1
+      firstFrame: 0
       lastFrame: 35
       wrapMode: 0
       orientationOffsetY: 0
@@ -643,7 +643,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.2214765
+      - time: 0.24333441
         functionName: SpawnGrenadeProjectile
         data: 
         objectReferenceParameter: {instanceID: 0}
