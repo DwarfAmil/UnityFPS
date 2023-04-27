@@ -11,6 +11,7 @@ public class ItemMagazine : ItemBase
     [SerializeField] private float _moveDis = 0.2f;
     [SerializeField] private float _pingpongSpeed = 0.5f;
     [SerializeField] private float _rotateSpeed = 50;
+    [SerializeField] private int _increaseAmmo = 1;
 
     private IEnumerator Start()
     {
@@ -32,10 +33,15 @@ public class ItemMagazine : ItemBase
 
     public override void Use(GameObject entity)
     {
-        entity.GetComponentInChildren<WeaponAssaultRifle>().IncreaseMagazine(_increaseMazine);
-
+        entity.GetComponent<WeaponSwitchSystem>().IncreaseMagazine(_increaseMazine);
+        
         Instantiate(_magazineEffectPrefab, transform.position, quaternion.identity);
         
         Destroy(gameObject);
+    }
+
+    public override void UseAmmo(GameObject entity)
+    {
+        
     }
 }

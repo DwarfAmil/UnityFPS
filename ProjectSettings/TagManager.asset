@@ -21,6 +21,7 @@ TagManager:
   - ImpactEnemy
   - InteractionObject
   - Item
+  - ItemGrenade
   layers:
   - Default
   - TransparentFX

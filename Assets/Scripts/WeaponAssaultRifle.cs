@@ -306,12 +306,4 @@ public class WeaponAssaultRifle : WeaponBase
         _isAttack = false;
         _isModeChange = false;
     }
-
-    public void IncreaseMagazine(int magazine)
-    {
-        _weaponSetting.currentMagazine =
-            CurrentMagazine + magazine > MaxMagazine ? MaxMagazine : CurrentMagazine + magazine;
-        
-        onMagazineEvent.Invoke(CurrentMagazine);
-    }
 }

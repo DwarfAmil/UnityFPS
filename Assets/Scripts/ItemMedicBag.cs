@@ -38,4 +38,9 @@ public class ItemMedicBag : ItemBase
         
         Destroy(gameObject);
     }
+
+    public override void UseAmmo(GameObject entity)
+    {
+        throw new NotImplementedException();
+    }
 }

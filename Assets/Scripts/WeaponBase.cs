@@ -60,4 +60,21 @@ public abstract class WeaponBase : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         _animator = GetComponent<PlayerAnimatorController>();
     }
+
+    public void IncreaseMagazine(int magazine)
+    {
+        _weaponSetting.currentMagazine =
+            CurrentMagazine + magazine > MaxMagazine ? MaxMagazine : CurrentMagazine + magazine;
+        
+        onMagazineEvent.Invoke(CurrentMagazine);
+    }
+    
+    public void IncreaseAmmo(int ammo)
+    {
+        // 수류탄은 탄창이 없고, 탄 수를 수류탄 개수로 사용하기 때문에 탄 수를 증가시킴
+        _weaponSetting.currentAmmo =
+            _weaponSetting.currentAmmo + ammo > _weaponSetting.maxAmmo ? _weaponSetting.maxAmmo : _weaponSetting.currentAmmo + ammo;
+        
+        onAmmoEvent.Invoke(_weaponSetting.currentAmmo, _weaponSetting.maxAmmo);
+    }
 }

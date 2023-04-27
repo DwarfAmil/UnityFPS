@@ -45,7 +45,7 @@ public class WeaponGrenade : WeaponBase
 
     public override void StopWeaponAction(int type = 0)
     {
-        throw new System.NotImplementedException();
+        _isAttack = false;
     }
 
     public override void StartReload()
@@ -88,6 +88,15 @@ public class WeaponGrenade : WeaponBase
         grenadeClone.GetComponent<WeaponGrenadeProjectile>().Setup(_weaponSetting.damage, transform.parent.forward);
 
         _weaponSetting.currentAmmo--;
+        onAmmoEvent.Invoke(_weaponSetting.currentAmmo, _weaponSetting.maxAmmo);
+    }
+    
+    public void IncreaseAmmo(int ammo)
+    {
+        // 수류탄은 탄창이 없고, 탄 수를 수류탄 개수로 사용하기 때문에 탄 수를 증가시킴
+        _weaponSetting.currentAmmo =
+            _weaponSetting.currentAmmo + ammo > _weaponSetting.maxAmmo ? _weaponSetting.maxAmmo : _weaponSetting.currentAmmo + ammo;
+        
         onAmmoEvent.Invoke(_weaponSetting.currentAmmo, _weaponSetting.maxAmmo);
     }
 }

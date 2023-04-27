@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class WeaponSwitchSystem : MonoBehaviour
@@ -80,5 +81,37 @@ public class WeaponSwitchSystem : MonoBehaviour
         
         // 현재 사용하는 무기 활성화
         _currentWeapon.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// 첫 번째 매개변수에 설정된 하나의 무기 탄창 수 증가
+    /// </summary>
+    public void IncreaseMagazine(WeaponType weaponType, int magazine)
+    {
+        // 해당 무기가 있는지 검사
+        if (_weapons[(int)weaponType] != null)
+        {
+            // 해당 무기의 탄창 수를 magazine만큼 증가
+            _weapons[(int)weaponType].IncreaseMagazine(magazine);
+        }
+    }
+
+    /// <summary>
+    /// 소지중인 모든 무기의 탄창 수 증가
+    /// </summary>
+    public void IncreaseMagazine(int magazine)
+    {
+        for (int i = 0; i < _weapons.Length; i++)
+        {
+            if (_weapons[i] != null)
+            {
+                _weapons[i].IncreaseMagazine(magazine);
+            }
+        }
+    }
+    
+    public void IncreaseAmmo(int ammo)
+    {
+        _weapons[(int)WeaponType.Throw].IncreaseAmmo(ammo);
     }
 }

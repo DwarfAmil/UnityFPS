@@ -10,9 +10,12 @@ public class PlayerCollider : MonoBehaviour
     {
         if (other.CompareTag("Item"))
         {
-            Debug.Log("tq");
             other.GetComponent<ItemBase>().Use(transform.parent.gameObject);
-            Debug.Log("tqasd");
+        }
+
+        if (other.CompareTag("ItemGrenade"))
+        {
+            other.GetComponent<ItemBase>().UseAmmo(transform.parent.gameObject);
         }
     }
 }
