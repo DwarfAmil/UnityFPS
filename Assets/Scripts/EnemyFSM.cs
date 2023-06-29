@@ -48,6 +48,9 @@ public class EnemyFSM : MonoBehaviour
     
     // 적 메모리 풀
     private EnemyMemoryPool _enemyMemoryPool;
+    
+    // 적 애니메이션
+    private Animator _shootAni;
 
     //private void Awake()
     public void Setup(Transform target, EnemyMemoryPool enemyMemoryPool)
@@ -65,6 +68,8 @@ public class EnemyFSM : MonoBehaviour
     {
         // 적이 활성화 될 때 적의 상태를 "Idle"로 설정
         ChangeState(EnemyState.Idle);
+
+        _shootAni = GetComponent<Animator>();
     }
 
     private void OnDisable()
@@ -258,6 +263,7 @@ public class EnemyFSM : MonoBehaviour
                     _projectileSpawnPoint.rotation
                     );
                 clone.GetComponent<EnemyProjectile>().Setup(_target.position);
+                _shootAni.SetTrigger("Shoot");
             }
 
             yield return null;
